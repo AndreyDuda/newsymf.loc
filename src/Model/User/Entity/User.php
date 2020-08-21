@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace App\Model\User\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -41,6 +41,12 @@ class User implements UserInterface
      * @ORM\Column(type="boolean")
      */
     private $isVerified = false;
+
+    public function __construct(string $email, string $passwordHash)
+    {
+        $this->email = $email;
+        $this->password = $passwordHash;
+    }
 
     public function getId(): ?int
     {
@@ -92,6 +98,11 @@ class User implements UserInterface
      * @see UserInterface
      */
     public function getPassword(): string
+    {
+        return (string) $this->password;
+    }
+
+    public function getPasswordHash(): string
     {
         return (string) $this->password;
     }
