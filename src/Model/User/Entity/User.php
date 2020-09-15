@@ -42,7 +42,7 @@ class User implements UserInterface
      */
     private $isVerified = false;
 
-    public function __construct(string $email, string $passwordHash)
+    public function __construct(string $email = '', string $passwordHash = '')
     {
         $this->email = $email;
         $this->password = $passwordHash;
