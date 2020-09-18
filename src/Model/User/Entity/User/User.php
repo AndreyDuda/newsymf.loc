@@ -21,6 +21,8 @@ class User implements UserInterface
      */
     private $id;
 
+    /** @var \DateTimeImmutable */
+    private $date;
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      */
@@ -42,13 +44,15 @@ class User implements UserInterface
      */
     private $isVerified = false;
 
-    public function __construct(string $email = '', string $passwordHash = '')
+    public function __construct(string $id, \DateTimeImmutable $date, string $email = '', string $passwordHash = '')
     {
+        $this->id = $id;
+        $this->date = $date;
         $this->email = $email;
         $this->password = $passwordHash;
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -105,6 +109,11 @@ class User implements UserInterface
     public function getPasswordHash(): string
     {
         return (string) $this->password;
+    }
+
+    public function getDate():\DateTimeImmutable
+    {
+        return $this->date;
     }
 
     public function setPassword(string $password): self
