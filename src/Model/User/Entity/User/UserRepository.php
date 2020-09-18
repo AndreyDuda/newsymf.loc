@@ -1,10 +1,11 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Model\User\Entity\User;
 
-
-class UserRepository
+Interface UserRepository
 {
+    public function hasByEmail(Email $email): bool;
 
+    public function add(User $user): void;
 }

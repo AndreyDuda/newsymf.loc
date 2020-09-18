@@ -3,18 +3,19 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Model\UseCase\SignUp\Request;
 
+use App\Model\User\Entity\User\Email;
+use App\Model\User\Entity\User\Id;
 use App\Model\User\Entity\User\User;
 use PHPUnit\Framework\TestCase;
-use Ramsey\Uuid\Uuid;
 
 class RequestTest extends TestCase
 {
     public function testSuccess()
     {
         $user = new User(
-            $id = Uuid::uuid4()->toString(),
+            $id = Id::next(),
             $date = new \DateTimeImmutable(),
-            $email = 'test@app.test',
+            $email = new Email('test@test.test'),
             $hash = 'hash'
         );
 
