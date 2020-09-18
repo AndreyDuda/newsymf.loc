@@ -24,7 +24,7 @@ doctrine:
                 is_bundle: false
                 type: annotation
                 dir: '%kernel.project_dir%/src/Model/User/Entity'
-                prefix: 'App\Model\User\Entity'
+                prefix: 'App\Model\User\Entity\User'
                 alias: User
             Post:
                 is_bundle: false
