@@ -14,6 +14,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User
 {
+    const STATUS_WAIT = false;
+    const STATUS_ACTIVE = true;
+
     /**
      * @var Id
      */
@@ -21,6 +24,7 @@ class User
 
     /** @var \DateTimeImmutable */
     private $date;
+
     /**
      * @var Email
      * @ORM\Column(type="string", length=180, unique=true)
@@ -33,12 +37,34 @@ class User
      */
     private $passwordHash;
 
-    public function __construct(Id $id, \DateTimeImmutable $date, Email $email, string $hash)
+    /**
+     * @var string|null
+     */
+    private $confirmToken;
+
+    /**
+     * @var string
+     */
+    private $status;
+
+    public function __construct(Id $id, \DateTimeImmutable $date, Email $email, string $hash, string $token)
     {
         $this->id = $id;
         $this->date = $date;
         $this->email = $email;
         $this->passwordHash = $hash;
+        $this->confirmToken = $token;
+        $this->status = self::STATUS_WAIT;
+    }
+
+    public function isWait(): bool
+    {
+        return $this->status === self::STATUS_WAIT;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === self::STATUS_ACTIVE;
     }
 
     public function getId(): Id
@@ -59,5 +85,10 @@ class User
     public function getDate():\DateTimeImmutable
     {
         return $this->date;
+    }
+
+    public function getConfirmToken(): string
+    {
+        return $this->confirmToken;
     }
 }
