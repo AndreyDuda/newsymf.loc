@@ -8,5 +8,5 @@ class Command
     /**
      * @var string
      */
-    private $email;
+    public $email;
 }

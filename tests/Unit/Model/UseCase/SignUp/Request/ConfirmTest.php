@@ -1,8 +1,7 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Tests\Unit\Model\UseCase\SignUp\Request;
-
 
 use App\Model\User\Entity\User\Email;
 use App\Model\User\Entity\User\Id;
