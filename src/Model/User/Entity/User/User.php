@@ -3,6 +3,7 @@
 namespace App\Model\User\Entity\User;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -14,8 +15,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User
 {
-    const STATUS_WAIT = false;
-    const STATUS_ACTIVE = true;
+    const STATUS_NEW = 'new';
+    const STATUS_WAIT = 'wait';
+    const STATUS_ACTIVE = 'active';
 
     /**
      * @var Id
@@ -47,14 +49,62 @@ class User
      */
     private $status;
 
-    public function __construct(Id $id, \DateTimeImmutable $date, Email $email, string $hash, string $token)
+    /**
+     * @var Network[]|ArrayCollection
+     */
+    private $networks;
+
+    public function __construct(Id $id, \DateTimeImmutable $date)
     {
         $this->id = $id;
         $this->date = $date;
+        $this->status = self::STATUS_NEW;
+        $this->networks = new ArrayCollection();
+    }
+
+    public function signupByEmail(Email $email, string $hash, string $token): void
+    {
+        if (!$this->isNew()) {
+            throw new \DomainException('User is already signed up.');
+        }
+
         $this->email = $email;
         $this->passwordHash = $hash;
         $this->confirmToken = $token;
         $this->status = self::STATUS_WAIT;
+    }
+
+    public function confirmSignUp(): void
+    {
+        if (!$this->isWait()) {
+            throw new \DomainException('User is already confirmed.');
+        }
+        $this->status = self::STATUS_ACTIVE;
+        $this->confirmToken = null;
+    }
+
+    public function signUpByNetwork(string $network, string $identity): void
+    {
+        if (!$this->isWait()) {
+            throw new \DomainException('User is already confirmed.');
+        }
+        $this->attachNetwork($network, $identity);
+        $this->status = self::STATUS_ACTIVE;
+    }
+
+    private function attachNetwork(string $network, string $identity): void
+    {
+        foreach ($this->networks as $existing) {
+            if ($existing->isForNetwork($network)) {
+                throw new \DomainException('Network is already attached.');
+            }
+        }
+        $this->networks->add(new Network($this, $network, $identity));
+    }
+
+    public function isNew(): bool
+    {
+        return $this->status === self::STATUS_NEW;
     }
 
     public function isWait(): bool
@@ -65,15 +115,6 @@ class User
     public function isActive(): bool
     {
         return $this->status === self::STATUS_ACTIVE;
-    }
-
-    public function confirmSignUp(): void
-    {
-        if (!$this->isWait()) {
-            throw new \DomainException('User is already confirmed.');
-        }
-        $this->status = self::STATUS_ACTIVE;
-        $this->confirmToken = null;
     }
 
     public function getId(): Id
@@ -99,5 +140,10 @@ class User
     public function getConfirmToken(): ?string
     {
         return $this->confirmToken;
+    }
+
+    public function getNetworks(): array
+    {
+        return $this->networks->toArray();
     }
 }
