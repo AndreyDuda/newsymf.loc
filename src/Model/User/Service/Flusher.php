@@ -3,10 +3,7 @@ declare(strict_types=1);
 
 namespace App\Model\User\Service;
 
-class Flusher
+interface Flusher
 {
-    public function flush(): void
-    {
-
-    }
+    public function flush(): void;
 }

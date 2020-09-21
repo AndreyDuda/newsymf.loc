@@ -3,19 +3,15 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Model\UseCase\Network\Auth;
 
-use App\Model\User\Entity\User\Id;
 use App\Model\User\Entity\User\Network;
-use App\Model\User\Entity\User\User;
+use App\Tests\Builder\User\UserBuilder;
 use PHPUnit\Framework\TestCase;
 
 class AuthTest extends TestCase
 {
     public function testSuccess(): void
     {
-        $user = new User(
-            Id::next(),
-            new \DateTimeImmutable()
-        );
+        $user = (new UserBuilder())->build();
 
         $user->signUpByNetwork(
             $network = 'vk',
@@ -24,19 +20,16 @@ class AuthTest extends TestCase
 
         self::assertTrue($user->isActive());
 
-        self::assertCount(1, $network = $user->getNetworks());
+        self::assertCount(1, $networks = $user->getNetworks());
         /** @var Network $first */
-        self::assertInstanceOf(Network::class, $first = reset($network));
-        self::assertEquals($network. $first->getNetwork());
+        self::assertInstanceOf(Network::class, $first = reset($networks));
+        self::assertEquals($network, $first->getNetwork());
         self::assertEquals($identity, $first->getIdentity());
     }
 
     public function testAlready(): void
     {
-        $user = new User(
-            $id = Id::next(),
-            $date = new \DateTimeImmutable()
-        );
+        $user = (new UserBuilder())->build();
 
         $user->signUpByNetwork(
             $network = 'vk',

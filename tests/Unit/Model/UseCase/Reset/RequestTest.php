@@ -3,10 +3,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Model\UseCase\Reset;
 
-use App\Model\User\Entity\User\Email;
-use App\Model\User\Entity\User\Id;
 use App\Model\User\Entity\User\ResetToken;
-use App\Model\User\Entity\User\User;
+use App\Tests\Builder\User\UserBuilder;
 use PHPUnit\Framework\TestCase;
 
 class RequestTest extends TestCase
@@ -17,7 +15,8 @@ class RequestTest extends TestCase
         $now = new \DateTimeImmutable();
         $token = new ResetToken('token', $now->modify('+1 day'));
 
-        $user = $this->buildSignedUpByEmailUser();
+        $user = (new UserBuilder())->viaEmail()->build();
+
         $user->requestPasswordReset($token, $now);
 
         self::assertNotNull($user->getResetToken());
@@ -28,16 +27,18 @@ class RequestTest extends TestCase
         $now = new \DateTimeImmutable();
         $token = new ResetToken('token', $now->modify('+1 day'));
 
-        $user = $this->buildSignedUpByEmailUser();
+        $user = (new UserBuilder())->viaEmail()->build();
+
         $user->requestPasswordReset($token, $now);
-        $this->expectExceptionMessage('Resetting is already request.');
+
+        $this->expectExceptionMessage('Resetting is already requested.');
         $user->requestPasswordReset($token, $now);
     }
     public function testExpired(): void
     {
         $now = new \DateTimeImmutable();
 
-        $user = $this->buildSignedUpByEmailUser();
+        $user = (new UserBuilder())->viaEmail()->build();
 
         $token1 = new ResetToken('token', $now->modify('+1 day'));
         $user->requestPasswordReset($token1, $now);
@@ -56,29 +57,9 @@ class RequestTest extends TestCase
         $now = new \DateTimeImmutable();
         $token = new ResetToken('token', $now->modify('+1 day'));
 
-        $user = $this->buildUser();
+        $user = (new UserBuilder())->viaNetwork()->build();
 
         $this->expectExceptionMessage('Email is not specified.');
         $user->requestPasswordReset($token, $now);
-    }
-
-    private function buildSignedUpByEmailUser(): User
-    {
-        $user = $this->buildUser();
-        $user->signUpByEmail(
-            new Email('test@test.test'),
-            'hash',
-            $token = 'token'
-        );
-
-        return $user;
-    }
-
-    private function buildUser(): User
-    {
-        return new User(
-            Id::next(),
-            new \DateTimeImmutable()
-        );
     }
 }

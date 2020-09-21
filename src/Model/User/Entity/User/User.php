@@ -90,7 +90,7 @@ class User
 
     public function signUpByNetwork(string $network, string $identity): void
     {
-        if (!$this->isWait()) {
+        if (!$this->isNew()) {
             throw new \DomainException('User is already confirmed.');
         }
         $this->attachNetwork($network, $identity);
@@ -112,7 +112,7 @@ class User
         if (!$this->email) {
             throw new \DomainException('Email is not specified.');
         }
-        if ($this->resetToken && $this->resetToken->isExpiredTo($date)) {
+        if ($this->resetToken && !$this->resetToken->isExpiredTo($date)) {
             throw new \DomainException('Resetting is already requested.');
         }
         $this->resetToken = $token;
@@ -176,6 +176,6 @@ class User
 
     public function getResetToken()
     {
-        return 's';
+        return $this->resetToken;
     }
 }

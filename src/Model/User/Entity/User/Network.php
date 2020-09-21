@@ -47,7 +47,7 @@ class Network
 
     public function getIdentity(): string
     {
-        $this->identity;
+        return $this->identity;
     }
 
 }
