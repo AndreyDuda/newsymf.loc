@@ -20,13 +20,6 @@
             padding-right: 15px;
             padding-left: 15px;
         }
-
-        .controls > * {
-            margin-right: 4px;
-        }
-        .controls > *:last-child {
-            margin-right: 0;
-        }
     </style>
     {% block stylesheets %}{% endblock %}
 </head>
@@ -44,21 +37,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('home') }}">Home</a>
                     </li>
-                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('post_index') }}">Posts</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_register') }}">Sing In</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_login') }}">Login</a>
-                        </li>
-                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('auth.signup') }}">Sign Up</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -68,6 +49,7 @@
 <main role="main" class="flex-shrink-0">
     <div class="container">
         {% block breadcrumbs %}{% endblock %}
+        {% include '_flashes.html.twig' %}
         {% block body %}{% endblock %}
     </div>
 </main>
