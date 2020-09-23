@@ -20,22 +20,24 @@ class Handler
     private $hasher;
     /** @var Flusher */
     private $flusher;
-    /** @var ConfirmTokenizer */
-    private $tokenizer;
     /** @var ConfirmTokenSender */
     private $sender;
+    /** @var ConfirmTokenizer  */
+    private $tokenizer;
 
     public function __construct(
         UserRepository $users,
         PasswordHasher $hasher,
-        ConfirmTokenizer $tokenizer,
         ConfirmTokenSender $sender,
-        Flusher $flusher
+        Flusher $flusher,
+        ConfirmTokenizer $tokenizer
     )
     {
         $this->users = $users;
         $this->hasher = $hasher;
+        $this->sender = $sender;
         $this->flusher = $flusher;
+        $this->tokenizer = $tokenizer;
     }
 
     public function handle(Command $command): void

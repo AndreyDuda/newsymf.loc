@@ -87,6 +87,9 @@
     "egulias/email-validator": {
         "version": "2.1.19"
     },
+    "finesse/swiftmailer-defaults-plugin": {
+        "version": "v2.0.3"
+    },
     "monolog/monolog": {
         "version": "1.25.5"
     },

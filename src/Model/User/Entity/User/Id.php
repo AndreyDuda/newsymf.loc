@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace App\Model\User\Entity\User;
 
-use PHPUnit\Framework\Assert;
+
 use Ramsey\Uuid\Uuid;
+use Webmozart\Assert\Assert;
 
 class Id
 {
@@ -12,7 +13,7 @@ class Id
 
     public function __construct(string $value)
     {
-        Assert::assertNotEmpty($value);
+        Assert::notEmpty($value);
         $this->value = $value;
     }
 

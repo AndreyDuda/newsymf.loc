@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Model\User\Entity\User;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Model\EntityNotFoundException;
 
 class UserRepository
@@ -12,7 +12,11 @@ class UserRepository
 
     private $repo;
 
-    public function __construct(EntityManager $em)
+    /**
+     * UserRepository constructor.
+     * @param EntityManagerInterface $em
+     */
+    public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->repo = $em->getRepository(User::class);
