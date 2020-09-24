@@ -12,6 +12,6 @@ class ConfirmTokenizer
      */
     public function generate(): string
     {
-        return Uuid::uuid4()->toString();
+        return Uuid::uuid1()->toString();
     }
 }
