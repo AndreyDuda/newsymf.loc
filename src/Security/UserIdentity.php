@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace App\Security;
 
+use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Model\User\Entity\User\User;
 
-class UserIdentity implements UserInterface
+class UserIdentity implements UserInterface, EquatableInterface
 {
     private $id;
     private $username;
@@ -18,13 +19,15 @@ class UserIdentity implements UserInterface
         string $id,
         string $username,
         string $password,
-        string $role
+        string $role,
+        string $status
     )
     {
         $this->id = $id;
         $this->username = $username;
         $this->password = $password;
         $this->role = $role;
+        $this->status = $status;
     }
 
     public function getId(): string
@@ -47,9 +50,14 @@ class UserIdentity implements UserInterface
         return $this->password;
     }
 
-    public function getRoles()
+    public function getRoles(): string
     {
-        $this->role;
+        return $this->role;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
     }
 
     public function getSalt(): ?string
@@ -61,5 +69,20 @@ class UserIdentity implements UserInterface
     {
 
     }
+
+    public function isEqualTo(UserInterface $user): bool
+    {
+        if (!$user instanceof self) {
+            return false;
+        }
+
+        return
+            $this->id === $user->id &&
+            $this->username === $user->username &&
+            $this->password === $user->password &&
+            $this->role === $user->role &&
+            $this->status === $user->status;
+    }
+
 
 }
