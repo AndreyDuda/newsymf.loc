@@ -50,9 +50,9 @@ class UserIdentity implements UserInterface, EquatableInterface
         return $this->password;
     }
 
-    public function getRoles(): string
+    public function getRoles(): array
     {
-        return $this->role;
+        return [$this->role];
     }
 
     public function getStatus(): string

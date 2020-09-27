@@ -36,7 +36,7 @@ class UserProvider implements UserProviderInterface
 
     public function supportsClass($class): bool
     {
-        return $class instanceof UserIdentity;
+        return $class === UserIdentity::class;
     }
 
     public function loadUser($username): AuthView
@@ -57,5 +57,4 @@ class UserProvider implements UserProviderInterface
             $user->status
         );
     }
-
 }

@@ -55,7 +55,7 @@ class User
      */
     private $status;
     /**
-     * @var Role
+     * @var Role[]|ArrayCollection
      * @ORM\Column(type="user_user_role", length=16)
      */
     private $role;
@@ -69,7 +69,7 @@ class User
     {
         $this->id = $id;
         $this->date = $date;
-        $this->role = Role::user();
+        $this->role = (new ArrayCollection())->add(Role::user());
         $this->networks = new ArrayCollection();
     }
 
@@ -148,7 +148,7 @@ class User
         if ($this->role->isEqual($role)) {
             throw new \DomainException('Role is already same.');
         }
-        $this->role = $role;
+        $this->role = (new ArrayCollection())->add($role);
     }
 
     public function isNew(): bool
@@ -191,9 +191,9 @@ class User
         return $this->confirmToken;
     }
 
-    public function getRole(): Role
+    public function getRoles(): array
     {
-        return $this->role;
+        return $this->role->toArray();
     }
 
     public function getNetworks(): array

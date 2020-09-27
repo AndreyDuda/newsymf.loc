@@ -5,7 +5,6 @@ namespace App\ReadModel\User;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\FetchMode;
-use function Webmozart\Assert\Tests\StaticAnalysis\null;
 
 class UserFetcher
 {
@@ -36,8 +35,8 @@ class UserFetcher
                 'role',
                 'status'
             )
-            ->from('user_user')
-            ->where(':email', $email)
+            ->from('user_users')
+            ->where('email = :email')
             ->setParameter(':email', $email)
             ->execute();
 
