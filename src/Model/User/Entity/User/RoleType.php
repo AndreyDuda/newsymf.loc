@@ -12,7 +12,7 @@ class RoleType extends StringType
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform): string
     {
-        return $value instanceof Role ? $value->getName() : $value[0];
+        return $value->last() instanceof Role ? $value->last()->getName() : $value;
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform): ?Role

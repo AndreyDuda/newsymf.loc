@@ -69,7 +69,8 @@ class User
     {
         $this->id = $id;
         $this->date = $date;
-        $this->role = (new ArrayCollection())->add(Role::user());
+        $this->role = new ArrayCollection();
+        $this->role->add(Role::user());
         $this->networks = new ArrayCollection();
     }
 
