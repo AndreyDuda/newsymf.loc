@@ -22,7 +22,7 @@ class ResetController extends AbstractController
     }
 
     /**
-     * @Route("/reset", name="auht.reset")
+     * @Route("/reset", name="auth.reset")
      *
      * @param Request $request
      * @param Reset\Request\Handler $handler

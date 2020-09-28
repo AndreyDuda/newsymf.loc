@@ -41,11 +41,6 @@ class Role
         return $this->name === self::USER;
     }
 
-    public function isEqual(self $role): bool
-    {
-        return $this->getName() === $role->getName();
-    }
-
     public function getName(): string
     {
         return $this->name;

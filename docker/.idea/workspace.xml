@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="744c18a2-2612-4149-82f1-bfbdc3ab7aa7" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="PhpDebugGeneral" listening_started="true" />
+  <component name="ProjectId" id="1g6CKGqktVG01BqUf9BDb6JjNvx" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="744c18a2-2612-4149-82f1-bfbdc3ab7aa7" name="Default Changelist" comment="" />
+      <created>1597425589361</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1597425589361</updated>
+      <workItem from="1597425590384" duration="1551000" />
+      <workItem from="1597522566753" duration="363000" />
+      <workItem from="1597525761930" duration="863000" />
+      <workItem from="1597527741211" duration="1793000" />
+      <workItem from="1597752193875" duration="1690000" />
+      <workItem from="1601242854382" duration="1528000" />
+      <workItem from="1601245342150" duration="579000" />
+      <workItem from="1601245939209" duration="132000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="315" y="535" width="640" height="403" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1597425809076">
+      <screen x="0" y="27" width="2560" height="1413" />
+    </state>
+    <state x="315" y="535" width="640" height="403" key="#com.intellij.fileTypes.FileTypeChooser/0.27.2560.1413@0.27.2560.1413" timestamp="1597425809076" />
+    <state x="1365" y="491" width="424" height="491" key="FileChooserDialogImpl" timestamp="1597532037819">
+      <screen x="0" y="27" width="2560" height="1413" />
+    </state>
+    <state x="1365" y="491" width="424" height="491" key="FileChooserDialogImpl/0.27.2560.1413@0.27.2560.1413" timestamp="1597532037819" />
+    <state x="298" y="349" key="search.everywhere.popup" timestamp="1597525763391">
+      <screen x="0" y="27" width="2560" height="1413" />
+    </state>
+    <state x="298" y="349" key="search.everywhere.popup/0.27.2560.1413@0.27.2560.1413" timestamp="1597525763391" />
+  </component>
+  <component name="p4-ProjectCache">
+    <option name="serverState">
+      <list />
+    </option>
+    <option name="clientState">
+      <list />
+    </option>
+    <option name="pendingActions">
+      <list />
+    </option>
+    <option name="changelistState">
+      <State>
+        <option name="lastPendingChangelistId" value="-2" />
+        <option name="linkedChangelistMap">
+          <list />
+        </option>
+        <option name="pendingChangelistMap">
+          <list />
+        </option>
+      </State>
+    </option>
+  </component>
+</project>
