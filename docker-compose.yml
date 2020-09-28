@@ -21,7 +21,7 @@ services:
     volumes:
       - ./:/var/www
     environment:
-      - PHP_IDE_CONFIG=serverName=xdebug
+      - PHP_IDE_CONFIG=serverName=localhost
   php-cli:
     build:
       context: ./
