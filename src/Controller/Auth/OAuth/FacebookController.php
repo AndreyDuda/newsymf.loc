@@ -23,7 +23,7 @@ class FacebookController extends AbstractController
     }
 
     /**
-     * @Route("/oauth/facebook/check", name="oauth.facebook_check")
+     * @Route("/oauth/facebook/check", name="connect_facebook_check")
      * @return Response
      */
     public function check(): Response

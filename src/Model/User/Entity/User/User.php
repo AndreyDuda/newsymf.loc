@@ -70,8 +70,8 @@ class User
         $this->id = $id;
         $this->date = $date;
         $this->role = new ArrayCollection();
-        $this->role->add(Role::user());
         $this->networks = new ArrayCollection();
+        $this->role->add(Role::user());
     }
 
     public static function signupByEmail(

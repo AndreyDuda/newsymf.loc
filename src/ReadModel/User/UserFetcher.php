@@ -51,11 +51,11 @@ class UserFetcher
     {
         $stmt = $this->connection->createQueryBuilder()
             ->select(
-                'u,id',
-                'u,email',
-                'u,password_hash',
-                'u,role',
-                'u,status'
+                'u.id',
+                'u.email',
+                'u.password_hash',
+                'u.role',
+                'u.status'
             )
             ->from('user_users', 'u')
             ->innerJoin('u', 'user_user_networks', 'n', 'n.identity = :identity')

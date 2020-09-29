@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Model\User\Entity\User;
@@ -7,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 
 /**
- * @ORM\Entity)
+ * @ORM\Entity
  * @ORM\Table(name="user_user_networks", uniqueConstraints={
  *     @ORM\UniqueConstraint(columns={"network", "identity"})
  * })
@@ -59,5 +60,4 @@ class Network
     {
         return $this->identity;
     }
-
 }
