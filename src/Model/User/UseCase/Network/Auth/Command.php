@@ -20,4 +20,17 @@ class Command
      * @Assert\Length(min="6")
      */
     public $identity;
+
+    /**
+     * Command constructor.
+     * @param string $network
+     * @param string $identity
+     */
+    public function __construct(string $network, string $identity)
+    {
+        $this->network = $network;
+        $this->identity = $identity;
+    }
+
+
 }

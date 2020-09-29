@@ -5,6 +5,7 @@ namespace App\ReadModel\User;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\FetchMode;
+use function Webmozart\Assert\Tests\StaticAnalysis\null;
 
 class UserFetcher
 {
@@ -25,7 +26,7 @@ class UserFetcher
             ->execute()->fetchColumn(0) > 0;
     }
 
-    public function findForAuth(string $email): ?AuthView
+    public function findForAuthByEmail($email): ?AuthView
     {
         $stmt = $this->connection->createQueryBuilder()
             ->select(
@@ -38,6 +39,29 @@ class UserFetcher
             ->from('user_users')
             ->where('email = :email')
             ->setParameter(':email', $email)
+            ->execute();
+
+        $stmt->setFetchMode(FetchMode::CUSTOM_OBJECT, AuthView::class);
+        $result = $stmt->fetch();
+
+        return $result ?: null;
+    }
+
+    public function findForAuthByNetwork($network, $identity): ?AuthView
+    {
+        $stmt = $this->connection->createQueryBuilder()
+            ->select(
+                'u,id',
+                'u,email',
+                'u,password_hash',
+                'u,role',
+                'u,status'
+            )
+            ->from('user_users', 'u')
+            ->innerJoin('u', 'user_user_networks', 'n', 'n.identity = :identity')
+            ->where('n.network = :network AND n.identity = :identity')
+            ->setParameter(':network', $network)
+            ->setParameter(':identity', $identity)
             ->execute();
 
         $stmt->setFetchMode(FetchMode::CUSTOM_OBJECT, AuthView::class);
