@@ -5,7 +5,7 @@ services:
     container_name: nginx-manager
     links:
       - php-fpm
-      - php-cli
+      - manager_php-cli_1
     volumes:
       - ./:/var/www
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
@@ -13,7 +13,7 @@ services:
       - "80:80"
     depends_on:
       - php-fpm
-      - php-cli
+      - manager_php-cli_1
   php-fpm:
     build:
       context: ./
@@ -22,13 +22,26 @@ services:
       - ./:/var/www
     environment:
       - PHP_IDE_CONFIG=serverName=localhost
-  php-cli:
+  manager_php-cli_1:
     build:
       context: ./
       dockerfile: docker/php-cli.docker
     volumes:
       - ./:/var/www
-  postgres:
+  manager-node-watch:
+    image: node:10.13-alpine
+    volumes:
+      - ./:/var/www
+    working_dir: /var/www
+    command: sh -c "until [ -f .ready ] ; do sleep 1 ; done && npm run watch"
+  manager-node:
+    container_name: api-node
+    image: node:10.13-alpine
+    volumes:
+      - ./:/var/www
+    working_dir: /var/www
+    tty: true
+  manager-postgres:
     image: postgres:11.2-alpine
     volumes:
       - ./docker/postgres:/var/lib/posgresql/data

@@ -22,12 +22,12 @@ class UserFixture extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $hasher = $this->hasher->hash('hasher');
+        $hasher = $this->hasher->hash('stop2311198');
 
         $user = User::signupByEmail(
             Id::next(),
             new \DateTimeImmutable(),
-            new Email('admin@app.test'),
+            new Email('test@test.test'),
             $hasher,
             'token'
         );

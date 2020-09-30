@@ -146,7 +146,8 @@ class User
 
     public function changeRole(Role $role): void
     {
-        $this->role = (new ArrayCollection())->add($role);
+        $this->role = (new ArrayCollection());
+        $this->role->add($role);
     }
 
     public function isNew(): bool

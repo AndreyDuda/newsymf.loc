@@ -13,15 +13,12 @@ class EmailType extends StringType
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
-        if ($value instanceof ArrayCollection && $value->last() instanceof EmailType) {
-            return $value->last()->getValue();
-        }
-        return $value;
+        return $value instanceof Email ? $value->getValue() : $value;
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform): ?Email
     {
-        return !empty($value) ? new Email($value) : null ;
+        return !empty($value) ? new Email($value) : null;
     }
 
     public function getName(): string
