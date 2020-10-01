@@ -27,7 +27,7 @@ class UserFixture extends Fixture
         $user = User::signupByEmail(
             Id::next(),
             new \DateTimeImmutable(),
-            new Email('test@test.test'),
+            new Email('test@test.com'),
             $hasher,
             'token'
         );
