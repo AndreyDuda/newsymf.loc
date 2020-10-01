@@ -30,6 +30,7 @@ services:
       - ./:/var/www
   manager-node-watch:
     image: node:12.0.0
+    restart: on-failure
     volumes:
       - ./:/var/www
     working_dir: /var/www
