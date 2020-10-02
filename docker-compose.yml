@@ -22,12 +22,20 @@ services:
       - ./:/var/www
     environment:
       - PHP_IDE_CONFIG=serverName=localhost
+    depends_on:
+      - manager-postgres
+      - manager-redis
+      - mailer
   manager_php-cli_1:
     build:
       context: ./
       dockerfile: docker/php-cli.docker
     volumes:
       - ./:/var/www
+    depends_on:
+      - manager-postgres
+      - manager-redis
+      - mailer
   manager-node-watch:
     image: node:12.0.0
     restart: on-failure
@@ -52,6 +60,11 @@ services:
       POSTGRES_DB: app
     ports:
       - '54321:5432'
+  manager-redis:
+    image: redis:3.0-alpine
+    volumes:
+      - ./docker/redis:/redis
+    command: redis-server --requirepass secret
   mailer:
     image: mailhog/mailhog
     ports:
