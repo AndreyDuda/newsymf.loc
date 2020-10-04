@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Model\User\Entity\User;
@@ -6,7 +7,6 @@ namespace App\Model\User\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\StringType;
-use function Webmozart\Assert\Tests\StaticAnalysis\string;
 
 class RoleType extends StringType
 {

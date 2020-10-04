@@ -1,10 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Tests\Unit\Model\UseCase\Reset;
 
 use App\Model\User\Entity\User\ResetToken;
-use App\Model\User\Entity\User\User;
 use App\Tests\Builder\User\UserBuilder;
 use PHPUnit\Framework\TestCase;
 
