@@ -1,10 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Model\User\UseCase\SignUp\Confirm;
+namespace App\Model\User\UseCase\SignUp\Confirm\Manual;
 
-use App\Model\User\Entity\User\UserRepository;
 use App\Model\Flusher;
+use App\Model\User\Entity\User\Id;
+use App\Model\User\Entity\User\UserRepository;
 
 class Handler
 {
@@ -17,11 +18,9 @@ class Handler
         $this->flusher = $flusher;
     }
 
-    public function handler(Command $command): void
+    public function handle(Command $command): void
     {
-        if (!$user = $this->users->findByConfirmToken($command->token)) {
-            throw new \DomainException('Incorrect or confirmed token.');
-        }
+        $user = $this->users->get(new Id($command->id));
 
         $user->confirmSignUp();
 
