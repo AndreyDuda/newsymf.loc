@@ -7,7 +7,7 @@ namespace App\Model\User\Service;
 use App\Model\User\Entity\User\Email;
 use Twig\Environment;
 
-class ConfirmTokenSender
+class NewEmailConfirmTokenSender
 {
     private $mailer;
     private $twig;
@@ -18,16 +18,16 @@ class ConfirmTokenSender
         $this->twig = $twig;
     }
 
-    public function send(Email $email, string $token): void
+    public function send(Email $email, string $token)
     {
-        $message = (new \Swift_Message('Sig up Confirmation'))
+        $message = (new \Swift_Message('Email Confirmation'))
             ->setTo($email->getValue())
-            ->setBody($this->twig->render('mail/user/signup.html.twig', [
+            ->setBody($this->twig->render('email/user/email.html.twig', [
                 'token' => $token
             ]), 'text/html');
 
-        if (!$this->mailer->send($message)) {
-            throw new \RuntimeException('Unable to send message');
+        if (!$this->mailer->sender($message)) {
+            throw new \RuntimeException('Unable to send message.');
         }
     }
 }

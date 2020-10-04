@@ -115,6 +115,7 @@ class UserFetcher
             ->select('network', 'identity')
             ->from('user_user_networks')
             ->where('user_id = :id')
+            ->setParameter(':id', $id)
             ->execute();
 
         $stmt->setFetchMode(FetchMode::CUSTOM_OBJECT, NetworkView::class);

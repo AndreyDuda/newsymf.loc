@@ -20,7 +20,7 @@ class Id
 
     static function next(): self
     {
-        return new self(Uuid::uuid4()->toString());
+        return new self(Uuid::uuid1()->toString());
     }
 
     public function getvalue(): string

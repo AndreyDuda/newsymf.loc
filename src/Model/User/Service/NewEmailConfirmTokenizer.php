@@ -6,11 +6,8 @@ namespace App\Model\User\Service;
 
 use Ramsey\Uuid\Uuid;
 
-class ConfirmTokenizer
+class NewEmailConfirmTokenizer
 {
-    /**
-     * @return string
-     */
     public function generate(): string
     {
         return Uuid::uuid1()->toString();

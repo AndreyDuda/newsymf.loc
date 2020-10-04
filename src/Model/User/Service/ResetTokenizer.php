@@ -19,7 +19,7 @@ class ResetTokenizer
     public function generate(): ResetToken
     {
         return new ResetToken(
-            Uuid::uuid4()->toString(),
+            Uuid::uuid1()->toString(),
             (new \DateTimeImmutable())->add($this->interval)
         );
     }

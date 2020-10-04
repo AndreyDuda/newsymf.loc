@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Model\UseCase\Network\Auth;
+namespace App\Tests\Unit\Model\User\Entity\User\Network\Auth;
 
 use App\Model\User\Entity\User\Id;
 use App\Model\User\Entity\User\Network;

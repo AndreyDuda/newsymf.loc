@@ -40,7 +40,7 @@ class Network
 
     public function __construct(User $user, string $network, string $identity)
     {
-        $this->id = Uuid::uuid4()->toString();
+        $this->id = Uuid::uuid1()->toString();
         $this->user = $user;
         $this->network = $network;
         $this->identity = $identity;

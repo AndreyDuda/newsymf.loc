@@ -2,6 +2,7 @@
 @import "~@coreui/coreui/scss/coreui";
 @import "~simple-line-icons/scss/simple-line-icons";
 @import "~font-awesome/scss/font-awesome";
+@import "~bootstrap/scss/bootstrap";
 
 main {
     & > .container {
@@ -23,4 +24,3 @@ main {
         padding-left: 15px;
     }
 }
-
