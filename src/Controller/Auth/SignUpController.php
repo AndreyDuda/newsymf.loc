@@ -5,20 +5,26 @@ declare(strict_types=1);
 namespace App\Controller\Auth;
 
 use App\Model\User\UseCase\SignUp;
+use App\ReadModel\User\UserFetcher;
+use App\Security\LoginFormAuthenticator;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SignUpController extends AbstractController
 {
+    private $users;
     private $logger;
     private $translator;
 
-    public function __construct(LoggerInterface $logger, TranslatorInterface $translator)
+    public function __construct(UserFetcher $users, LoggerInterface $logger, TranslatorInterface $translator)
     {
+        $this->users = $users;
         $this->logger = $logger;
         $this->translator = $translator;
     }
@@ -53,23 +59,43 @@ class SignUpController extends AbstractController
     }
 
     /**
-     * @Route("/signup/{token}", name="auth.signup.confirm")
+     * @param Request $request
      * @param string $token
      * @param SignUp\Confirm\ByToken\Handler $handler
+     * @param UserProviderInterface $userProvider
+     * @param GuardAuthenticatorHandler $guardHandler
+     * @param LoginFormAuthenticator $authenticator
      * @return Response
      */
-    public function confirm(string $token, SignUp\Confirm\ByToken\Handler $handler): response
+    public function confirm(
+        Request $request,
+        string $token,
+        SignUp\Confirm\ByToken\Handler $handler,
+        UserProviderInterface $userProvider,
+        GuardAuthenticatorHandler $guardHandler,
+        LoginFormAuthenticator $authenticator
+    ): response
     {
+        if (!$user = $this->users->findBySignUpConfirmToken($token)) {
+            $this->addFlash('error', 'Incorrect or already confirmed token.');
+            return $this->redirectToRoute('auth.signup');
+        }
+
+
         $command = new SignUp\Confirm\ByToken\Command($token);
 
         try {
             $handler->handler($command);
-            $this->addFlash('success', 'Email is success confirmed.');
-            return $this->redirectToRoute('home');
+           return $guardHandler->authenticateUserAndHandleSuccess(
+               $userProvider->loadUserByUsername($user->email),
+               $request,
+               $authenticator,
+               'main'
+           );
         } catch (\DomainException $e) {
             $this->logger->error($e->getMessage(), ['exception' => $e]);
             $this->addFlash('error', $e->getMessage());
-            return  $this->redirectToRoute('home');
+            return  $this->redirectToRoute('auth.signup');
         }
     }
 
