@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\DataFixtures;
 
 use App\Model\User\Entity\User\Email;
+use App\Model\User\Entity\User\Name;
 use App\Model\User\Entity\User\Id;
 use App\Model\User\Entity\User\Role;
 use App\Model\User\Entity\User\User;
@@ -28,6 +29,7 @@ class UserFixture extends Fixture
         $user = User::signupByEmail(
             Id::next(),
             new \DateTimeImmutable(),
+            new Name('James', 'Bond'),
             new Email('test@test.com'),
             $hasher,
             'token'

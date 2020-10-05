@@ -21,12 +21,15 @@ class Command
      * @Assert\Length(min="6")
      */
     public $identity;
-
     /**
-     * Command constructor.
-     * @param string $network
-     * @param string $identity
+     * @var string
      */
+    public $firstName;
+    /**
+     * @var string
+     */
+    public $lastName;
+
     public function __construct(string $network, string $identity)
     {
         $this->network = $network;

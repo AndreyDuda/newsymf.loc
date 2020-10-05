@@ -36,7 +36,7 @@ class FacebookAuthenticator extends SocialAuthenticator
 
     public function supports(Request $request): bool
     {
-        return $request->attributes->get('_route') === 'connect_facebook_check';
+        return $request->attributes->get('_route') === 'oauth.facebook_check';
     }
 
     public function getCredentials(Request $request)
@@ -52,10 +52,14 @@ class FacebookAuthenticator extends SocialAuthenticator
         $id = $facebookUser->getId();
         $username = $network . ':' . $id;
 
+        $command = new Command($network, $id);
+        $command->firstName = $facebookUser->getFirstName();
+        $command->lastName = $facebookUser->getLastName();
+
         try {
             return $userProvider->loadUserByUsername($username);
         } catch (UsernameNotFoundException $e) {
-            $this->handler->handle(new Command($network, $id));
+            $this->handler->handle($command);
             return $userProvider->loadUserByUsername($username);
         }
     }

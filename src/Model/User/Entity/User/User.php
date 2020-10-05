@@ -47,6 +47,11 @@ class User
      */
     private $confirmToken;
     /**
+     * @var Name
+     * @ORM\Embedded(class="Name")
+     */
+    private $name;
+    /**
      * @var Email|null
      * @ORM\Column(type="user_user_email", name="new_email", nullable=true)
      */
@@ -77,10 +82,11 @@ class User
      */
     private $networks;
 
-    private function __construct(Id $id, \DateTimeImmutable $date)
+    private function __construct(Id $id, \DateTimeImmutable $date, Name $name)
     {
         $this->id = $id;
         $this->date = $date;
+        $this->name = $name;
         $this->role = new ArrayCollection();
         $this->networks = new ArrayCollection();
         $this->role->add(Role::user());
@@ -88,13 +94,14 @@ class User
 
     public static function signupByEmail(
         Id $id,
+        Name $name,
         \DateTimeImmutable $date,
         Email $email,
         string $hash,
         string $token
     ): self
     {
-        $user = new self($id, $date);
+        $user = new self($id, $date, $name);
         $user->email = $email;
         $user->passwordHash = $hash;
         $user->confirmToken = $token;
@@ -114,17 +121,18 @@ class User
     public static function signUpByNetwork(
         Id $id,
         \DateTimeImmutable $date,
+        Name $name,
         string $network,
         string $identity
     ): self
     {
-        $user = new self($id, $date);
+        $user = new self($id, $date, $name);
         $user->attachNetwork($network, $identity);
         $user->status = self::STATUS_ACTIVE;
         return $user;
     }
 
-    private function attachNetwork(string $network, string $identity): void
+    public function attachNetwork(string $network, string $identity): void
     {
         foreach ($this->networks as $existing) {
             if ($existing->isForNetwork($network)) {
@@ -181,6 +189,11 @@ class User
         $this->newEmailToken = null;
     }
 
+    public function changeName(Name $name): void
+    {
+        $this->name = $name;
+    }
+
     public function changeRole(Role $role): void
     {
         $this->role = (new ArrayCollection());
@@ -205,6 +218,11 @@ class User
     public function getId(): Id
     {
         return $this->id;
+    }
+
+    public function getName(): Name
+    {
+        return $this->name;
     }
 
     public function getEmail(): Email

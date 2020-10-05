@@ -34,6 +34,7 @@ class UserFetcher
                 'id',
                 'email',
                 'password_hash',
+                'TRIM(CONCAT(name_first, \' \', name_last)) AS name',
                 'role',
                 'status'
             )
@@ -97,6 +98,8 @@ class UserFetcher
             ->select(
                 'id',
                 'date',
+                'name_first first_name',
+                'name_last last_name',
                 'email',
                 'role',
                 'status'
@@ -143,5 +146,13 @@ class UserFetcher
         $result = $stmt->fetch();
 
         return $result ?: null;
+    }
+
+    public function getDetail(string $id): DetailView
+    {
+        if (!$detail = $this->findDetail($id)) {
+            throw new \LogicException('User is not found');
+        }
+        return $detail;
     }
 }
