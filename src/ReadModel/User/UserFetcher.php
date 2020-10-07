@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\ReadModel\User;
 
+use App\Model\User\Entity\User\User;
 use App\ReadModel\User\Filter\Filter;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\FetchMode;
-use http\Exception\UnexpectedValueException;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 
@@ -15,24 +16,26 @@ class UserFetcher
 {
     private $connection;
     private $paginator;
+    private $repository;
 
-    public function __construct(Connection $connection, PaginatorInterface $paginator)
+    public function __construct(Connection $connection, EntityManagerInterface $em, PaginatorInterface $paginator)
     {
         $this->connection = $connection;
+        $this->repository = $em->getRepository(User::class);
         $this->paginator = $paginator;
     }
 
     public function existsByResetToken(string $token): bool
     {
         return $this->connection->createQueryBuilder()
-            ->select('COUNT(*)')
-            ->from('user_users')
-            ->where('reset_token_token = :token')
-            ->setParameter(':token', $token)
-            ->execute()->fetchColumn(0) > 0;
+                ->select('COUNT (*)')
+                ->from('user_users')
+                ->where('reset_token_token = :token')
+                ->setParameter(':token', $token)
+                ->execute()->fetchColumn(0) > 0;
     }
 
-    public function findForAuthByEmail($email): ?AuthView
+    public function findForAuthByEmail(string $email): ?AuthView
     {
         $stmt = $this->connection->createQueryBuilder()
             ->select(
@@ -54,18 +57,19 @@ class UserFetcher
         return $result ?: null;
     }
 
-    public function findForAuthByNetwork($network, $identity): ?AuthView
+    public function findForAuthByNetwork(string $network, string $identity): ?AuthView
     {
         $stmt = $this->connection->createQueryBuilder()
             ->select(
                 'u.id',
                 'u.email',
                 'u.password_hash',
+                'TRIM(CONCAT(u.name_first, \' \', u.name_last)) AS name',
                 'u.role',
                 'u.status'
             )
             ->from('user_users', 'u')
-            ->innerJoin('u', 'user_user_networks', 'n', 'n.identity = :identity')
+            ->innerJoin('u', 'user_user_networks', 'n', 'n.user_id = u.id')
             ->where('n.network = :network AND n.identity = :identity')
             ->setParameter(':network', $network)
             ->setParameter(':identity', $identity)
@@ -97,42 +101,6 @@ class UserFetcher
         return $result ?: null;
     }
 
-    public function findDetail(string $id): ?DetailView
-    {
-        $stmt = $this->connection->createQueryBuilder()
-            ->select(
-                'id',
-                'date',
-                'name_first first_name',
-                'name_last last_name',
-                'email',
-                'role',
-                'status'
-            )
-            ->from('user_users')
-            ->where('id = :id')
-            ->setParameter(':id', $id)
-            ->execute();
-
-        $stmt->setFetchMode(FetchMode::CUSTOM_OBJECT, DetailView::class);
-
-        /** @var DetailView $view */
-        $view = $stmt->fetch();
-
-        $stmt = $this->connection->createQueryBuilder()
-            ->select('network', 'identity')
-            ->from('user_user_networks')
-            ->where('user_id = :id')
-            ->setParameter(':id', $id)
-            ->execute();
-
-        $stmt->setFetchMode(FetchMode::CUSTOM_OBJECT, NetworkView::class);
-
-        $view->networks = $stmt->fetchAll();
-
-        return $view;
-    }
-
     public function findBySignUpConfirmToken(string $token): ?ShortView
     {
         $stmt = $this->connection->createQueryBuilder()
@@ -153,18 +121,20 @@ class UserFetcher
         return $result ?: null;
     }
 
-    public function getDetail(string $id): DetailView
+    public function get(string $id): User
     {
-        if (!$detail = $this->findDetail($id)) {
-            throw new \LogicException('User is not found');
+        if (!$user = $this->repository->find($id)) {
+            throw new NotFoundException('User is not found');
         }
-        return $detail;
+        return $user;
     }
 
     /**
      * @param Filter $filter
      * @param int $page
      * @param int $size
+     * @param string $sort
+     * @param string $direction
      * @return PaginationInterface
      */
     public function all(Filter $filter, int $page, int $size, string $sort, string $direction): PaginationInterface
@@ -178,8 +148,7 @@ class UserFetcher
                 'role',
                 'status'
             )
-            ->from('user_users')
-            ->orderBy('date', 'desc');
+            ->from('user_users');
 
         if ($filter->name) {
             $qb->andWhere($qb->expr()->like('LOWER(CONCAT(name_first, \' \', name_last))', ':name'));
@@ -201,7 +170,7 @@ class UserFetcher
             $qb->setParameter(':role', $filter->role);
         }
 
-        if (!in_array($sort, ['date', 'name', 'email', 'role', 'status'], true)) {
+        if (!\in_array($sort, ['date', 'name', 'email', 'role', 'status'], true)) {
             throw new \UnexpectedValueException('Cannot sort by ' . $sort);
         }
 
