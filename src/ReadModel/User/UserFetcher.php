@@ -7,15 +7,19 @@ namespace App\ReadModel\User;
 use App\ReadModel\User\Filter\Filter;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\FetchMode;
-use function Webmozart\Assert\Tests\StaticAnalysis\null;
+use http\Exception\UnexpectedValueException;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 class UserFetcher
 {
     private $connection;
+    private $paginator;
 
-    public function __construct(Connection $connection)
+    public function __construct(Connection $connection, PaginatorInterface $paginator)
     {
         $this->connection = $connection;
+        $this->paginator = $paginator;
     }
 
     public function existsByResetToken(string $token): bool
@@ -159,9 +163,11 @@ class UserFetcher
 
     /**
      * @param Filter $filter
-     * @return array[]
+     * @param int $page
+     * @param int $size
+     * @return PaginationInterface
      */
-    public function all(Filter $filter): array
+    public function all(Filter $filter, int $page, int $size, string $sort, string $direction): PaginationInterface
     {
         $qb = $this->connection->createQueryBuilder()
             ->select(
@@ -195,8 +201,12 @@ class UserFetcher
             $qb->setParameter(':role', $filter->role);
         }
 
-        $stmt = $qb->execute();
+        if (!in_array($sort, ['date', 'name', 'email', 'role', 'status'], true)) {
+            throw new \UnexpectedValueException('Cannot sort by ' . $sort);
+        }
 
-        return $stmt->fetchAll(FetchMode::ASSOCIATIVE);
+        $qb->orderBy($sort, $direction === 'desc' ? 'desc' : 'asc');
+
+        return $this->paginator->paginate($qb, $page, $size);
     }
 }

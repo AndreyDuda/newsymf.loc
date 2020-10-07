@@ -92,14 +92,7 @@ class User
         $this->role->add(Role::user());
     }
 
-    public static function signupByEmail(
-        Id $id,
-        Name $name,
-        \DateTimeImmutable $date,
-        Email $email,
-        string $hash,
-        string $token
-    ): self
+    public static function signUpByEmail(Id $id, \DateTimeImmutable $date, Name $name, Email $email, string $hash, string $token): self
     {
         $user = new self($id, $date, $name);
         $user->email = $email;
