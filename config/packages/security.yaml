@@ -44,14 +44,16 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     role_hierarchy:
-        ROLE_ADMIN: [ROLE_USER, ROLE_MANAGE_USERS]
+        ROLE_ADMIN:
+            - ROLE_USER
+            - ROLE_MANAGE_USERS
+            - ROLE_WORK_MANAGE_MEMBERS
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/signup, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/oauth/facebook, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/oauth/facebook/check, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/reset, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/users, roles: ROLE_MANAGE_USERS }
         - { path: ^/, roles: ROLE_USER }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
