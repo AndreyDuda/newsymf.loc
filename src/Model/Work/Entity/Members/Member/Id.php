@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Work\Entity\Members\Group;
+namespace App\Model\Work\Entity\Members\Member;
 
 use Ramsey\Uuid\Uuid;
 use Webmozart\Assert\Assert;

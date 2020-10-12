@@ -13,7 +13,7 @@ class RoleWidget extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('user_role', [$this, 'role'], ['needs_environment' => true, 'is_safe' => ['html']])
+            new TwigFunction('user_role', [$this, 'role'], ['needs_environment' => true, 'is_safe' => ['html']]),
         ];
     }
 

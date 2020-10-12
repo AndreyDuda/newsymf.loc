@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Work\Entity\Members\Group;
+namespace App\Model\Work\Entity\Members\Member;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\GuidType;
 
 class IdType extends GuidType
 {
-    public const NAME = 'work_members_group_id';
+    public const NAME = 'work_members_member_id';
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {

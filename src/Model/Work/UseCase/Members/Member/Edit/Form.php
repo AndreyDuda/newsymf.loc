@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Work\UseCase\Members\Group\Edit;
+namespace App\Model\Work\UseCase\Members\Member\Edit;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type;
@@ -14,7 +14,9 @@ class Form extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', Type\TextType::class);
+            ->add('firstName', Type\TextType::class)
+            ->add('lastName', Type\TextType::class)
+            ->add('email', Type\EmailType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -24,4 +26,3 @@ class Form extends AbstractType
         ));
     }
 }
-
