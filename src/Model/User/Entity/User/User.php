@@ -263,10 +263,7 @@ class User
         return $this->id;
     }
 
-    /**
-     * @return Role[]|ArrayCollection
-     */
-    public function getRole(): array
+    public function getRole()
     {
         return $this->role;
     }

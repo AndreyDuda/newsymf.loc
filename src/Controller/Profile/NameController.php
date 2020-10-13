@@ -27,6 +27,7 @@ class NameController extends AbstractController
     }
 
     /**
+     * @Route("", name="profile.name")
      * @param Request $request
      * @param Name\Handler $handler
      * @return Response
