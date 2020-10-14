@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\ReadModel\User;
 
 use App\Model\User\Entity\User\User;
+use App\ReadModel\NotFoundException;
 use App\ReadModel\User\Filter\Filter;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\FetchMode;
@@ -28,11 +29,11 @@ class UserFetcher
     public function existsByResetToken(string $token): bool
     {
         return $this->connection->createQueryBuilder()
-                ->select('COUNT (*)')
-                ->from('user_users')
-                ->where('reset_token_token = :token')
-                ->setParameter(':token', $token)
-                ->execute()->fetchColumn() > 0;
+            ->select('COUNT (*)')
+            ->from('user_users')
+            ->where('reset_token_token = :token')
+            ->setParameter(':token', $token)
+            ->execute()->fetchColumn() > 0;
     }
 
     public function findForAuthByEmail(string $email): ?AuthView
