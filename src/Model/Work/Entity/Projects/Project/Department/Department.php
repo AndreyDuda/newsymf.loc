@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="work_projects_project_deportment")
+ * @ORM\Table(name="work_projects_project_departments")
  */
 class Department
 {
