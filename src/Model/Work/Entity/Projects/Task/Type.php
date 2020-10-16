@@ -30,7 +30,7 @@ class Type
         return $this->getName() === $other->getName();
     }
 
-    private function getName(): string
+    public function getName(): string
     {
         return $this->name;
     }

@@ -4,17 +4,19 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Psr\Log\LoggerInterface;
+
 class ErrorHandler
 {
-    private $errors;
+    private $logger;
 
-    public function __construct(ErrorHandler $errors)
+    public function __construct(LoggerInterface $logger)
     {
-        $this->errors = $errors;
+        $this->logger = $logger;
     }
 
     public function handle(\DomainException $e): void
     {
-        $this->errors->handle($e);
+        $this->logger->warning($e->getMessage(), ['exception' => $e]);
     }
 }

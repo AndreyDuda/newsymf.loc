@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Tests\Unit\Model\Work\Entity\Projects\Task;
+
+use App\Model\EntityNotFoundException;
+use App\Model\Work\Entity\Projects\Task\Id;
+use App\Model\Work\Entity\Projects\Task\Task;
+use Doctrine\ORM\EntityManagerInterface;
+
+class TaskRepository
+{
+    private $repo;
+    private $connection;
+    private $em;
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->repo = $em->getRepository(Task::class);
+        $this->connection = $em->getConnection();
+        $this->em = $em;
+    }
+
+    public function get(Id $id): Task
+    {
+        /** @var Task $task */
+        if (!$task = $this->repo->find($id->getValue())) {
+            throw new EntityNotFoundException('Task is not found.');
+        }
+        return $task;
+    }
+
+    public function add(Task $task): void
+    {
+        $this->em->persist($task);
+    }
+
+    public function nextId(): Id
+    {
+        return new Id((int)$this->connection->query('SELECT nextval(\'work_projects_tasks_seq\')')->fetchColumn());
+    }
+}
