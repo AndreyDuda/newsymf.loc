@@ -5,20 +5,17 @@ declare(strict_types=1);
 namespace App\Tests\Builder\User;
 
 use App\Model\User\Entity\User\Email;
-use App\Model\User\Entity\User\Id;
+use App\Model\User\Entity\User\Name;
+use App\Model\User\Entity\User\Role;
 use App\Model\User\Entity\User\User;
-use function Webmozart\Assert\Tests\StaticAnalysis\null;
+use App\Model\User\Entity\User\Id;
+
 
 class UserBuilder
 {
-    const NETWORK = 'vk';
-    const IDENTITY = '000001';
-    const EMAIL = 'test@test.test';
-    const HASH = 'hash';
-    const TOKEN = 'token';
-
     private $id;
     private $date;
+    private $name;
 
     private $email;
     private $hash;
@@ -28,18 +25,21 @@ class UserBuilder
     private $network;
     private $identity;
 
+    private $role;
+
     public function __construct()
     {
         $this->id = Id::next();
         $this->date = new \DateTimeImmutable();
+        $this->name = new Name('First', 'Last');
     }
 
     public function viaEmail(Email $email = null, string $hash = null, string $token = null): self
     {
         $clone = clone $this;
-        $clone->email = $email ?? new Email(self::EMAIL);
-        $clone->hash = $hash ?? self::HASH;
-        $clone->token = $token ?? self::TOKEN;
+        $clone->email = $email ?? new Email('mail@app.test');
+        $clone->hash = $hash ?? 'hash';
+        $clone->token = $token ?? 'token';
         return $clone;
     }
 
@@ -53,17 +53,41 @@ class UserBuilder
     public function viaNetwork(string $network = null, string $identity = null): self
     {
         $clone = clone $this;
-        $clone->network = $network ?? self::NETWORK;
-        $clone->identity = $identity ?? self::IDENTITY;
+        $clone->network = $network ?? 'vk';
+        $clone->identity = $identity ?? '0001';
+        return $clone;
+    }
+
+    public function withId(Id $id): self
+    {
+        $clone = clone $this;
+        $clone->id = $id;
+        return $clone;
+    }
+
+    public function withName(Name $name): self
+    {
+        $clone = clone $this;
+        $clone->name = $name;
+        return $clone;
+    }
+
+    public function withRole(Role $role): self
+    {
+        $clone = clone $this;
+        $clone->role = $role;
         return $clone;
     }
 
     public function build(): User
     {
+        $user = null;
+
         if ($this->email) {
             $user = User::signUpByEmail(
                 $this->id,
                 $this->date,
+                $this->name,
                 $this->email,
                 $this->hash,
                 $this->token
@@ -72,19 +96,26 @@ class UserBuilder
             if ($this->confirmed) {
                 $user->confirmSignUp();
             }
-
-            return $user;
         }
 
         if ($this->network) {
-            return User::signUpByNetwork(
+            $user = User::signUpByNetwork(
                 $this->id,
                 $this->date,
+                $this->name,
                 $this->network,
                 $this->identity
             );
         }
 
-        throw new \BadMethodCallException('Specify via method.');
+        if (!$user) {
+            throw new \BadMethodCallException('Specify via method.');
+        }
+
+        if ($this->role) {
+            $user->changeRole($this->role);
+        }
+
+        return $user;
     }
 }
