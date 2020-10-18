@@ -6,6 +6,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-json": "^1.7",
+        "cebe/markdown": "^1.2",
         "composer/package-versions-deprecated": "1.10.99.1",
         "doctrine/annotations": "^1.0",
         "doctrine/doctrine-bundle": "^2.1",
@@ -49,6 +50,7 @@
         "twig/twig": "^2.12|^3.0"
     },
     "require-dev": {
+        "fzaninotto/faker": "^1.9",
         "symfony/browser-kit": "^4.4",
         "symfony/css-selector": "^4.4",
         "symfony/debug-bundle": "^4.4",
