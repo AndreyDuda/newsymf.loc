@@ -51,6 +51,7 @@
     },
     "require-dev": {
         "fzaninotto/faker": "^1.9",
+        "liip/functional-test-bundle": "2.0.0-alpha15",
         "symfony/browser-kit": "^4.4",
         "symfony/css-selector": "^4.4",
         "symfony/debug-bundle": "^4.4",

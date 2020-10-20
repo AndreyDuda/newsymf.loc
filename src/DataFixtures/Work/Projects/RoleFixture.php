@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\DataFixtures\Projects;
+namespace App\DataFixtures\Work\Projects;
 
 use App\Model\Work\Entity\Projects\Role\Id;
 use App\Model\Work\Entity\Projects\Role\Permission;

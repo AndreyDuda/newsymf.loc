@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\DataFixtures\Projects;
+namespace App\DataFixtures\Work\Projects;
 
 use App\Model\Work\Entity\Projects\Project\Membership;
 use App\Model\Work\Entity\Projects\Project\Project;
@@ -83,7 +83,7 @@ class TaskFixture extends Fixture implements DependentFixtureInterface
     public function getDependencies()
     {
         return [
-            \App\DataFixtures\Projects\ProjectFixture::class,
+            ProjectFixture::class,
         ];
     }
 
