@@ -3,6 +3,7 @@ down: docker-down
 restart: docker-down docker-up
 init: docker-down-clear manager-clear docker-pull docker-build docker-up manager-init
 test: manager-test
+test-unit: manager-test-unit
 
 docker-up:
 	docker-compose up -d
@@ -54,6 +55,9 @@ build-production:
 	docker build --pull --file=manager/docker/production/php-fpm.docker --tag ${REGISTRY_ADDRESS}/manager_php-fpm_1:${IMAGE_TAG} manager
 	docker build --pull --file=manager/docker/production/php-cli.docker --tag ${REGISTRY_ADDRESS}/manager_php-cli_1:${IMAGE_TAG} manager
 	docker build --pull --file=manager/docker/production/postgres.docker --tag ${REGISTRY_ADDRESS}/manager-postgres:${IMAGE_TAG} manager
+
+manager-test-unit:
+	docker-compose run --rm manager-php-cli php bin/phpunit --testsuite=unit
 
 push-production:
 	docker push ${REGISTRY_ADDRESS}/manager-nginx:${IMAGE_TAG}
