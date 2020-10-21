@@ -71,9 +71,9 @@ services:
       context: ./storage/docker/development
       dockerfile: nginx.docker
     volumes:
-    - ./storage:./www
+    - ./storage:/www
     ports:
-    - "8081:80"
+    - "81:80"
   storage-ftp:
     image: stilliard/pure-ftpd
     environment:
@@ -82,6 +82,7 @@ services:
       FTP_USER_HOME: /www
     volumes:
     - ./storage/public:/www
+
   mailer:
     image: mailhog/mailhog
     ports:
