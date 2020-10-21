@@ -65,7 +65,24 @@ services:
     volumes:
       - ./docker/redis:/redis
     command: redis-server --requirepass secret
+
+  storage:
+    build:
+      context: ./storage/docker/development
+      dockerfile: nginx.docker
+    volumes:
+    - ./storage:./www
+    ports:
+    - "8081:80"
+  storage-ftp:
+    image: stilliard/pure-ftpd
+    environment:
+      FTP_USER_NAME: app
+      FTP_USER_PASS: secret
+      FTP_USER_HOME: /www
+    volumes:
+    - ./storage/public:/www
   mailer:
     image: mailhog/mailhog
     ports:
-      - "8081:8025"
+      - "8082:8025"
