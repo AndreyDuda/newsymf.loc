@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Work\Projects;
 
 use App\Model\Work\Entity\Members\Member\Member;
+use App\Model\Work\Entity\Projects\Project\Project;
 use App\Model\Work\Entity\Projects\Task\Task;
 use App\Model\Work\UseCase\Projects\Task\ChildOf;
 use App\Model\Work\UseCase\Projects\Task\Edit;
@@ -22,6 +23,7 @@ use App\Model\Work\UseCase\Projects\Task\Type;
 use App\ReadModel\Work\Members\Member\MemberFetcher;
 use App\ReadModel\Work\Projects\Task\Filter;
 use App\ReadModel\Work\Projects\Task\TaskFetcher;
+use App\Security\Voter\Work\Projects\ProjectAccess;
 use App\Security\Voter\Work\Projects\TaskAccess;
 use App\Controller\ErrorHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -84,22 +86,22 @@ class TasksController extends AbstractController
 
     /**
      * @Route("/me", name=".me")
-     * @ParamConverter("project", options={"id" = "project_id"})
+     * @param Project $project
      * @param Request $request
-     * @param TaskFetcher $tasks
      * @return Response
      */
-    public function me(Request $request, TaskFetcher $tasks): Response
+    public function me(Project $project, Request $request): Response
     {
-        $filter = Filter\Filter::all();
+        $this->denyAccessUnlessGranted(ProjectAccess::VIEW, $project);
+
+        $filter = Filter\Filter::forProject($project->getId()->getValue());
 
         $form = $this->createForm(Filter\Form::class, $filter, [
-            'action' => $this->generateUrl('work.projects.tasks'),
+            'action' => $this->generateUrl('work.projects.project.tasks', ['project_id' => $project->getId()]),
         ]);
-
         $form->handleRequest($request);
 
-        $pagination = $tasks->all(
+        $pagination = $this->tasks->all(
             $filter->forExecutor($this->getUser()->getId()),
             $request->query->getInt('page', 1),
             self::PER_PAGE,
@@ -108,7 +110,7 @@ class TasksController extends AbstractController
         );
 
         return $this->render('app/work/projects/tasks/index.html.twig', [
-            'project' => null,
+            'project' => $project,
             'pagination' => $pagination,
             'form' => $form->createView(),
         ]);
@@ -116,22 +118,22 @@ class TasksController extends AbstractController
 
     /**
      * @Route("/own", name=".own")
-     * @ParamConverter("project", options={"id" = "project_id"})
+     * @param Project $project
      * @param Request $request
-     * @param TaskFetcher $tasks
      * @return Response
      */
-    public function own(Request $request, TaskFetcher $tasks): Response
+    public function own(Project $project, Request $request): Response
     {
-        $filter = Filter\Filter::all();
+        $this->denyAccessUnlessGranted(ProjectAccess::VIEW, $project);
+
+        $filter = Filter\Filter::forProject($project->getId()->getValue());
 
         $form = $this->createForm(Filter\Form::class, $filter, [
-            'action' => $this->generateUrl('work.projects.tasks'),
+            'action' => $this->generateUrl('work.projects.project.tasks', ['project_id' => $project->getId()]),
         ]);
-
         $form->handleRequest($request);
 
-        $pagination = $tasks->all(
+        $pagination = $this->tasks->all(
             $filter->forAuthor($this->getUser()->getId()),
             $request->query->getInt('page', 1),
             self::PER_PAGE,
@@ -140,7 +142,7 @@ class TasksController extends AbstractController
         );
 
         return $this->render('app/work/projects/tasks/index.html.twig', [
-            'project' => null,
+            'project' => $project,
             'pagination' => $pagination,
             'form' => $form->createView(),
         ]);
