@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
- * @ORM\Table(name="work_projects_task_file", indexes={
+ * @ORM\Table(name="work_projects_task_files", indexes={
  *      @ORM\Index(columns={"date"})
  * })
  */

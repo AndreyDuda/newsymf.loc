@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Widget\Work\Projects;
 
+use App\ReadModel\Work\Projects\Calendar\CalendarFetcher;
 use App\Security\UserIdentity;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Twig\Environment;
