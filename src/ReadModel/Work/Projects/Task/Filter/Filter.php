@@ -9,11 +9,12 @@ class Filter
     public $member;
     public $author;
     public $project;
-    public $name;
+    public $text;
     public $type;
     public $status;
     public $priority;
     public $executor;
+    public $roots;
 
     private function __construct(?string $project)
     {

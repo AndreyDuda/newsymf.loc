@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\ReadModel\Work\Projects\Task;
 
+use App\Model\Work\Entity\Projects\Task\Task;
 use App\ReadModel\Work\Projects\Task\Filter\Filter;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\FetchMode;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\Pagination\SlidingPagination;
 use Knp\Component\Pager\PaginatorInterface;
@@ -15,11 +17,18 @@ class TaskFetcher
 {
     private $connection;
     private $paginator;
+    private $repository;
 
-    public function __construct(Connection $connection, PaginatorInterface $paginator)
+    public function __construct(Connection $connection, EntityManagerInterface $em, PaginatorInterface $paginator)
     {
         $this->connection = $connection;
         $this->paginator = $paginator;
+        $this->repository = $em->getRepository(Task::class);
+    }
+
+    public function find(string $id): ?Task
+    {
+        return $this->repository->find($id);
     }
 
     /**
@@ -107,7 +116,18 @@ class TaskFetcher
             $qb->setParameter(':executor', $filter->executor);
         }
 
-        $qb->orderBy($sort ?: 't.id', $direction === 'desc' ? 'desc' : 'asc');
+        if ($filter->roots) {
+            $qb->andWhere('t.parent_id IS NULL');
+        }
+
+        if (!$sort) {
+            $sort = 't.id';
+            $direction = $direction ?: 'desc';
+        } else {
+            $direction = $direction ?: 'asc';
+        }
+
+        $qb->orderBy($sort, $direction);
 
         /** @var SlidingPagination $pagination */
         $pagination = $this->paginator->paginate($qb, $page, $size);
