@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controller\Work\Projects;
 
+use App\Model\Comment\UseCase\Comment;
 use App\Model\Work\Entity\Members\Member\Member;
-use App\Model\Work\Entity\Projects\Project\Project;
 use App\Model\Work\Entity\Projects\Task\Task;
 use App\Model\Work\UseCase\Projects\Task\ChildOf;
 use App\Model\Work\UseCase\Projects\Task\Edit;
 use App\Model\Work\UseCase\Projects\Task\Executor;
+use App\Model\Work\UseCase\Projects\Task\Files;
 use App\Model\Work\UseCase\Projects\Task\Move;
 use App\Model\Work\UseCase\Projects\Task\Plan;
 use App\Model\Work\UseCase\Projects\Task\Priority;
@@ -21,18 +22,17 @@ use App\Model\Work\UseCase\Projects\Task\Take;
 use App\Model\Work\UseCase\Projects\Task\TakeAndStart;
 use App\Model\Work\UseCase\Projects\Task\Type;
 use App\ReadModel\Work\Members\Member\MemberFetcher;
+use App\ReadModel\Work\Projects\Task\CommentFetcher;
 use App\ReadModel\Work\Projects\Task\Filter;
 use App\ReadModel\Work\Projects\Task\TaskFetcher;
-use App\Security\Voter\Work\Projects\ProjectAccess;
 use App\Security\Voter\Work\Projects\TaskAccess;
 use App\Controller\ErrorHandler;
+use App\Service\Uploader\FileUploader;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Service\Uploader\FileUploader;
-use App\Model\Work\UseCase\Projects\Task\Files;
 
 /**
  * @Route("/work/projects/tasks", name="work.projects.tasks")
@@ -86,22 +86,22 @@ class TasksController extends AbstractController
 
     /**
      * @Route("/me", name=".me")
-     * @param Project $project
+     * @ParamConverter("project", options={"id" = "project_id"})
      * @param Request $request
+     * @param TaskFetcher $tasks
      * @return Response
      */
-    public function me(Project $project, Request $request): Response
+    public function me(Request $request, TaskFetcher $tasks): Response
     {
-        $this->denyAccessUnlessGranted(ProjectAccess::VIEW, $project);
-
-        $filter = Filter\Filter::forProject($project->getId()->getValue());
+        $filter = Filter\Filter::all();
 
         $form = $this->createForm(Filter\Form::class, $filter, [
-            'action' => $this->generateUrl('work.projects.project.tasks', ['project_id' => $project->getId()]),
+            'action' => $this->generateUrl('work.projects.tasks'),
         ]);
+
         $form->handleRequest($request);
 
-        $pagination = $this->tasks->all(
+        $pagination = $tasks->all(
             $filter->forExecutor($this->getUser()->getId()),
             $request->query->getInt('page', 1),
             self::PER_PAGE,
@@ -110,7 +110,7 @@ class TasksController extends AbstractController
         );
 
         return $this->render('app/work/projects/tasks/index.html.twig', [
-            'project' => $project,
+            'project' => null,
             'pagination' => $pagination,
             'form' => $form->createView(),
         ]);
@@ -118,22 +118,22 @@ class TasksController extends AbstractController
 
     /**
      * @Route("/own", name=".own")
-     * @param Project $project
+     * @ParamConverter("project", options={"id" = "project_id"})
      * @param Request $request
+     * @param TaskFetcher $tasks
      * @return Response
      */
-    public function own(Project $project, Request $request): Response
+    public function own(Request $request, TaskFetcher $tasks): Response
     {
-        $this->denyAccessUnlessGranted(ProjectAccess::VIEW, $project);
-
-        $filter = Filter\Filter::forProject($project->getId()->getValue());
+        $filter = Filter\Filter::all();
 
         $form = $this->createForm(Filter\Form::class, $filter, [
-            'action' => $this->generateUrl('work.projects.project.tasks', ['project_id' => $project->getId()]),
+             'action' => $this->generateUrl('work.projects.tasks'),
         ]);
+
         $form->handleRequest($request);
 
-        $pagination = $this->tasks->all(
+        $pagination = $tasks->all(
             $filter->forAuthor($this->getUser()->getId()),
             $request->query->getInt('page', 1),
             self::PER_PAGE,
@@ -142,7 +142,7 @@ class TasksController extends AbstractController
         );
 
         return $this->render('app/work/projects/tasks/index.html.twig', [
-            'project' => $project,
+            'project' => null,
             'pagination' => $pagination,
             'form' => $form->createView(),
         ]);
@@ -557,10 +557,12 @@ class TasksController extends AbstractController
      * @param Request $request
      * @param MemberFetcher $members
      * @param TaskFetcher $tasks
+     * @param CommentFetcher $comments
      * @param Status\Handler $statusHandler
      * @param Progress\Handler $progressHandler
      * @param Type\Handler $typeHandler
      * @param Priority\Handler $priorityHandler
+     * @param Comment\Create\Handler $commentHandler
      * @return Response
      */
     public function show(
@@ -568,10 +570,12 @@ class TasksController extends AbstractController
         Request $request,
         MemberFetcher $members,
         TaskFetcher $tasks,
+        CommentFetcher $comments,
         Status\Handler $statusHandler,
         Progress\Handler $progressHandler,
         Type\Handler $typeHandler,
-        Priority\Handler $priorityHandler
+        Priority\Handler $priorityHandler,
+        Comment\Create\Handler $commentHandler
     ): Response
     {
         $this->denyAccessUnlessGranted(TaskAccess::VIEW, $task);
@@ -632,15 +636,35 @@ class TasksController extends AbstractController
             }
         }
 
+        $commentCommand = new Comment\Create\Command(
+            $this->getUser()->getId(),
+            Task::class,
+            (string)$task->getId()->getValue()
+        );
+
+        $commentForm = $this->createForm(Comment\Create\Form::class, $commentCommand);
+        $commentForm->handleRequest($request);
+        if ($commentForm->isSubmitted() && $commentForm->isValid()) {
+            try {
+                $commentHandler->handle($commentCommand);
+                return $this->redirectToRoute('work.projects.tasks.show', ['id' => $task->getId()]);
+            } catch (\DomainException $e) {
+                $this->errors->handle($e);
+                $this->addFlash('error', $e->getMessage());
+            }
+        }
+
         return $this->render('app/work/projects/tasks/show.html.twig', [
             'project' => $task->getProject(),
             'task' => $task,
             'member' => $member,
             'children' => $tasks->childrenOf($task->getId()->getValue()),
+            'comments' => $comments->allForTask($task->getId()->getValue()),
             'statusForm' => $statusForm->createView(),
             'progressForm' => $progressForm->createView(),
             'typeForm' => $typeForm->createView(),
             'priorityForm' => $priorityForm->createView(),
+            'commentForm' => $commentForm->createView(),
         ]);
     }
 }

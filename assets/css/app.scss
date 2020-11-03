@@ -2,7 +2,6 @@
 @import "~@coreui/coreui/scss/coreui";
 @import "~simple-line-icons/scss/simple-line-icons";
 @import "~font-awesome/scss/font-awesome";
-@import "~bootstrap/scss/bootstrap";
 
 main {
     & > .container {
@@ -14,6 +13,38 @@ main {
     .container-fluid {
         padding: 0 20px;
     }
+}
+
+.controls {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+
+    & > * {
+        margin-right: 4px;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}
+
+.box {
+    background: #fff;
+    box-shadow: 0 0 2px rgba(0,0,0,0.1);
+}
+
+.table {
+    th,
+    td {
+        vertical-align: middle;
+    }
+}
+
+.badge {
+    padding: 0.28em 0.4em 0.22em 0.4em;
+    line-height: 1.1;
 }
 
 .card {
@@ -75,6 +106,8 @@ pre {
         }
     }
 }
+
+@import "chat";
 
 .footer {
     background-color: #f5f5f5;
