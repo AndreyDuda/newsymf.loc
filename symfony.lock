@@ -120,6 +120,9 @@
     "ezyang/htmlpurifier": {
         "version": "v4.13.0"
     },
+    "facebook/webdriver": {
+        "version": "1.7.1"
+    },
     "finesse/swiftmailer-defaults-plugin": {
         "version": "v2.0.3"
     },
