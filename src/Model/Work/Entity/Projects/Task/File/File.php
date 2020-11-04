@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity()
  * @ORM\Table(name="work_projects_task_files", indexes={
- *      @ORM\Index(columns={"date"})
+ *     @ORM\Index(columns={"date"})
  * })
  */
 class File
@@ -22,6 +22,11 @@ class File
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", nullable=false)
      */
     private $task;
+    /**
+     * @var Member
+     * @ORM\ManyToOne(targetEntity="App\Model\Work\Entity\Members\Member\Member")
+     * @ORM\JoinColumn(name="member_id", referencedColumnName="id", nullable=false)
+     */
     private $member;
     /**
      * @var Id

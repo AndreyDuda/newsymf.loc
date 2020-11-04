@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Work\Entity\Projects\Task\File;
+namespace App\Model\Work\Entity\Projects\Task\Change;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Types\GuidType;
+use Doctrine\DBAL\Types\IntegerType;
 
-class IdType extends GuidType
+class IdType extends IntegerType
 {
-    public const NAME = 'work_projects_task_file_id';
+    public const NAME = 'work_projects_task_change_id';
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {

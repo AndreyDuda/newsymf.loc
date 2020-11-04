@@ -15,8 +15,9 @@ class TaskRepository
 
     public function __construct(EntityManagerInterface $em)
     {
-        $this->em = $em;
+        $this->repo = $em->getRepository(Task::class);
         $this->connection = $em->getConnection();
+        $this->em = $em;
     }
 
     /**

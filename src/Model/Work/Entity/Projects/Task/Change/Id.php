@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Work\Entity\Projects\Task;
+namespace App\Model\Work\Entity\Projects\Task\Change;
 
 use Webmozart\Assert\Assert;
 
@@ -14,6 +14,16 @@ class Id
     {
         Assert::notEmpty($value);
         $this->value = $value;
+    }
+
+    public static function first(): self
+    {
+        return new self(1);
+    }
+
+    public function next(): self
+    {
+        return new self($this->value + 1);
     }
 
     public function getValue(): int

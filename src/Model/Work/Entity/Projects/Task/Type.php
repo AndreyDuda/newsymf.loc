@@ -19,7 +19,7 @@ class Type
         Assert::oneOf($name, [
             self::NONE,
             self::ERROR,
-            self::FEATURE
+            self::FEATURE,
         ]);
 
         $this->name = $name;
