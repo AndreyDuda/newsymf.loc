@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-class EventsTrait
+trait EventsTrait
 {
     private $recordedEvents = [];
 
