@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class FileUploader
 {
     private $storage;
-    private $baseUrl;
+    private $basUrl;
 
     public function __construct(FilesystemInterface $storage, string $basUrl)
     {
@@ -35,5 +35,10 @@ class FileUploader
     public function generateUrl(string $path): string
     {
         return $this->basUrl . '/' . $path;
+    }
+
+    public function remove(string $path, string $name): void
+    {
+        $this->storage->delete($path . '/' . $name);
     }
 }
