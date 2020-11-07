@@ -27,6 +27,7 @@ services:
       - manager-redis
       - manager-queue-redis
       - mailer
+      - centrifugo
   manager_php-cli_1:
     build:
       context: ./
@@ -39,6 +40,7 @@ services:
       - manager-queue-redis
       - storage
       - mailer
+      - centrifugo
   manager-queue-worker:
     build:
       context: ./
@@ -51,6 +53,7 @@ services:
       - manager-queue-redis
       - storage
       - mailer
+      - centrifugo
     command: sh -c "until [ -f .ready ] ; do sleep 1 ; done && php bin/console messenger:consume async -vv"
   manager-node-watch:
     image: node:12.0.0
@@ -77,11 +80,17 @@ services:
     ports:
       - '54321:5432'
   manager-redis:
-    image: redis:3.0-alpine
+    image: redis:5.0-alpine
     volumes:
       - ./docker/redis:/redis
-    command: redis-server --requirepass secret
-  manager-queue-redis:
+    command:
+      - 'redis-server'
+      - '--databases 2'
+      - '--save 900 1'
+      - '--save 300 10'
+      - '--save 60 10000'
+      - '--requirepass secret'
+manager-queue-redis:
     image: redis:5.0-alpine
     volumes:
       - ./docker/manager-queue-docker:/data
@@ -107,3 +116,18 @@ services:
     image: mailhog/mailhog
     ports:
       - "8082:8025"
+
+  centrifugo:
+    image: centrifugo/centrifugo:v2.2
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    environment:
+      CENTRIFUGO_SECRET: secret
+      CENTRIFUGO_API_KEY: secret
+    volumes:
+      - ./centrifugo/docker/development/centrifugo:/centrifugo
+    ports:
+      - "8083:8000"
+    command: centrifugo --admin --admin_insecure
