@@ -12,10 +12,19 @@ security:
             #entity:
                 #class: App\Model\User\Entity\User
                 #property: email
+        encoders:
+            App\Security\UserIdentity: native
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        api:
+            pattern: ^/api
+            anonymous: true
+            stateless: true
+            user_checker: App\Security\UserChecker
+            http_basic:
+                provider: fetcher
         main:
             anonymous: lazy
             user_checker: App\Security\UserChecker
@@ -50,6 +59,8 @@ security:
             - ROLE_WORK_MANAGE_MEMBERS
             - ROLE_WORK_MANAGE_PROJECTS
     access_control:
+        - { path: ^/api$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api, roles: ROLE_USER }
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/signup, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/oauth/facebook, roles: IS_AUTHENTICATED_ANONYMOUSLY }
