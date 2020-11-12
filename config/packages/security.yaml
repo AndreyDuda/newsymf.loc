@@ -1,7 +1,6 @@
 security:
     encoders:
-        App\Model\User\Entity\User:
-            algorithm: auto
+        App\Security\UserIdentity: native
 
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:

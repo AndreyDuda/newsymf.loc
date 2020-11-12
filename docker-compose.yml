@@ -83,14 +83,8 @@ services:
     image: redis:5.0-alpine
     volumes:
       - ./docker/redis:/redis
-    command:
-      - 'redis-server'
-      - '--databases 2'
-      - '--save 900 1'
-      - '--save 300 10'
-      - '--save 60 10000'
-      - '--requirepass secret'
-manager-queue-redis:
+    command: redis-server --databases 2--save 900 1 --save 300 10 --save 60 10000 --requirepass secret
+  manager-queue-redis:
     image: redis:5.0-alpine
     volumes:
       - ./docker/manager-queue-docker:/data

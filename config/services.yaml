@@ -58,7 +58,7 @@ services:
                   - '%env(REDIS_PASSWORD)%'
 
 
-        Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler:
+    Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler:
         arguments:
             - '@Redis'
 

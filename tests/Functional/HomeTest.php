@@ -26,12 +26,5 @@ class HomeTest extends WebTestCase
         $this->assertStringContainsString('Home', $crawler->filter('title')->text());
     }
 
-    public function testAdmin(): void
-    {
-        $client = static::createClient([], AuthFixture::adminCredentials());
-        $crawler = $client->request('GET', '/');
 
-        $this->assertSame(200, $client->getResponse()->getStatusCode());
-        $this->assertStringContainsString('Home', $crawler->filter('title')->text());
-    }
 }
